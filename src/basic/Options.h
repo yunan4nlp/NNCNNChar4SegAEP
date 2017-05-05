@@ -15,6 +15,7 @@ class Options {
 public:
 
 	int wordCutOff;
+	int featCutOff;
 	int charCutOff;
 	int attCutOff;
 	int evalCharCutOff;
@@ -66,6 +67,7 @@ public:
 
 	Options() {
 		wordCutOff = 0;
+		featCutOff = 0;
 		charCutOff = 0;
 		attCutOff = 0;
 		evalCharCutOff = 0;
@@ -126,6 +128,8 @@ public:
 			string2pair(vecOption[i], pr, '=');
 			if (pr.first == "wordCutOff")
 				wordCutOff = atoi(pr.second.c_str());
+			if (pr.first == "featCutOff")
+				featCutOff = atoi(pr.second.c_str());
 			if (pr.first == "charCutOff")
 				charCutOff = atoi(pr.second.c_str());
 			if (pr.first == "attCutOff")
@@ -216,6 +220,7 @@ public:
 
 	void showOptions() {
 		std::cout << "wordCutOff = " << wordCutOff << std::endl;
+		std::cout << "featCutOff = " << featCutOff << std::endl;
 		std::cout << "charCutOff = " << charCutOff << std::endl;
 		std::cout << "attCutOff = " << attCutOff << std::endl;
 		std::cout << "evalCharCutOff = " << evalCharCutOff << std::endl;
