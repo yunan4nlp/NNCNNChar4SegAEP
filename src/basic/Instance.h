@@ -50,7 +50,7 @@ public:
 	vector<string> m_attributes;
 	vector<string> m_evalutions;
 	vector<vector<string> > m_eval_chars;
-	string m_polarity;
+	vector<string> m_polarity;
 	string m_label;
 
 	vector<dtype> m_gold_answer;

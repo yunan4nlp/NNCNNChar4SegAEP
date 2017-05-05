@@ -33,7 +33,8 @@ public:
 		for(int idx = 0; idx < eval_num; idx++) {
 			m_outf << "[e]" << evals[idx] << " ";
 		}
-		m_outf << pInstance->m_polarity << endl;
+		for(int idx = 0; idx < pInstance->m_polarity.size(); idx++ )
+		m_outf << pInstance->m_polarity[idx] << endl;
 	  return 0;
 	}
 };

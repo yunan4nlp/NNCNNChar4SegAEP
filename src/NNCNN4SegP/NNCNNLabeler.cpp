@@ -26,25 +26,39 @@ int Classifier::createAlphabet(const vector<Instance>& vecInsts) {
 		const Instance *pInstance = &vecInsts[numInstance];
 
 		const vector<string> &words = pInstance->m_segs;
+		const vector<string> &polar = pInstance->m_polarity;
 		const string &label = pInstance->m_label;
 
 		m_driver._modelparams.labelAlpha.from_string(label);
 		int words_num = words.size();
-		for (int i = 0; i < words_num; i++)
-		{
+		for (int i = 0; i < words_num; i++) {
 			string curword = normalize_to_lowerwithdigit(words[i]);
 			m_word_stats[curword]++;
+
+			vector<string> curchars;
+			getCharactersFromUTF8String(curword, curchars);
+			int char_num = curchars.size();
+			for (int j = 0; j < char_num; j++) {
+				string curchar = normalize_to_lowerwithdigit(curchars[j]);
+				m_char_stats[curchar]++;
+			}
+
 		}
 
-		const string &polarity = pInstance->m_polarity;
-		m_polarity_stats[polarity]++;
+		int p_num = polar.size();
+		for (int i = 0; i < p_num; i++) {
+			string curpolar = normalize_to_lowerwithdigit(polar[i]);
+			m_sparse_stats[curpolar]++;
+		}
+
 		if (m_options.maxInstance > 0 && numInstance == m_options.maxInstance)
 			break;
 	}
 
 	cout << numInstance << " " << endl;
 	cout << "Label num: " << m_driver._modelparams.labelAlpha.size() << endl;
-	cout << "Polarity num: " << m_polarity_stats.size() << endl;
+	cout << "Word num: " << m_word_stats.size() << endl;
+	cout << "sparse num:" << m_sparse_stats.size() << endl;
 	m_driver._modelparams.labelAlpha.set_fixed_flag(true);
 
 	return 0;
@@ -74,12 +88,19 @@ int Classifier::addTestAlpha(const vector<Instance>& vecInsts) {
 
 	for (int numInstance = 0; numInstance < vecInsts.size(); numInstance++) {
 		const Instance *pInstance = &vecInsts[numInstance];
-
+		const vector<string> &atts = pInstance->m_attributes;
 		const vector<string> &words = pInstance->m_segs;
 		int curInstSize = words.size();
 		for (int i = 0; i < curInstSize; ++i) {
 			string curword = normalize_to_lowerwithdigit(words[i]);
 			if (!m_options.wordEmbFineTune)m_word_stats[curword]++;
+			vector<string> curchars;
+			getCharactersFromUTF8String(curword, curchars);
+			int char_num = curchars.size();
+			for (int j = 0; j < char_num; j++) {
+				string curchar = normalize_to_lowerwithdigit(curchars[j]);
+				if(!m_options.charEmbFineTune)m_char_stats[curchar]++;
+			}
 		}
 
 		if (m_options.maxInstance > 0 && numInstance == m_options.maxInstance)
@@ -132,13 +153,23 @@ void Classifier::train(const string& trainFile, const string& devFile, const str
 
 	m_word_stats[unknownkey] = m_options.wordCutOff + 1;
 	m_driver._modelparams.wordAlpha.initial(m_word_stats, m_options.wordCutOff);
-	m_driver._modelparams.polarityAlpha.initial(m_polarity_stats);
-	m_driver._modelparams.polarity.initial(&m_driver._modelparams.polarityAlpha, m_options.polarityEmbSize, m_options.polarityEmbFineTune);
+	m_sparse_stats[unknownkey] = m_options.featCutOff + 1;
+	m_driver._modelparams.sparseAlpha.initial(m_sparse_stats, m_options.attCutOff);
+
 	if (m_options.wordFile != "") {
 		m_driver._modelparams.words.initial(&m_driver._modelparams.wordAlpha, m_options.wordFile, m_options.wordEmbFineTune);
 	}
 	else{
 		m_driver._modelparams.words.initial(&m_driver._modelparams.wordAlpha, m_options.wordEmbSize, m_options.wordEmbFineTune);
+	}
+
+	m_char_stats[unknownkey] = m_options.charCutOff + 1;
+	m_driver._modelparams.charAlpha.initial(m_char_stats, m_options.charCutOff);
+	if (m_options.charFile != "") {
+		m_driver._modelparams.chars.initial(&m_driver._modelparams.charAlpha, m_options.charFile, m_options.charEmbFineTune);
+	}
+	else{
+		m_driver._modelparams.chars.initial(&m_driver._modelparams.charAlpha, m_options.charEmbSize, m_options.charEmbFineTune);
 	}
 
 	m_driver._hyperparams.setRequared(m_options);

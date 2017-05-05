@@ -61,7 +61,7 @@ public:
 				m_instance.m_eval_chars.push_back(eval_chars);
 			}
 			if (str_info.find("[p]") != -1)
-				m_instance.m_polarity = str_info;
+				m_instance.m_polarity.push_back(str_info);
 		}
 		return &m_instance;
 	}

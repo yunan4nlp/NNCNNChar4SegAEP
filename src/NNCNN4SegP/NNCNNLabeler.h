@@ -17,7 +17,8 @@ class Classifier {
 
 public:
 	unordered_map<string, int> m_word_stats;
-	unordered_map<string, int> m_polarity_stats;
+	unordered_map<string, int> m_char_stats;
+	unordered_map<string, int> m_sparse_stats;
 
 public:
 	Options m_options;
