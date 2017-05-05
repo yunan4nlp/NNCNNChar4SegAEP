@@ -8,10 +8,15 @@ class ModelParams{
 public:
 	Alphabet wordAlpha; // should be initialized outside
 	LookupTable words; // should be initialized outside
+
+	Alphabet charAlpha; // should be initialized outside
+	LookupTable chars; // should be initialized outside
+
 	Alphabet evalCharAlpha;// should be initialized outside
 	LookupTable evalChars;// should be initialized outside
 	UniParams eval_char_hidden_linear;
 	UniParams hidden_linear;
+	UniParams char_hidden_linear;
 	UniParams olayer_linear; // output
 public:
 	Alphabet labelAlpha; // should be initialized outside
@@ -26,14 +31,21 @@ public:
 			return false;
 		}
 		opts.wordDim = words.nDim;
-		opts.evalCharDim = evalChars.nDim;
 		opts.wordWindow = opts.wordContext * 2 + 1;
-		opts.evalCharWindow = opts.evalCharContext * 2 + 1;
 		opts.windowOutput = opts.wordDim * opts.wordWindow;
+
+		opts.charDim = chars.nDim;
+		opts.charWindow = opts.charContext * 2 + 1;
+		opts.charWindowOutput = opts.charDim * opts.charWindow;
+
+		opts.evalCharDim = evalChars.nDim;
+		opts.evalCharWindow = opts.evalCharContext * 2 + 1;
 		opts.labelSize = labelAlpha.size();
 		hidden_linear.initial(opts.wordHiddenSize, opts.windowOutput, true, mem);
+		char_hidden_linear.initial(opts.charHiddenSize, opts.charWindowOutput, true, mem);
+
 		eval_char_hidden_linear.initial(opts.evalCharHiddenSize, opts.evalCharDim * opts.evalCharWindow, true, mem);
-		opts.inputSize = opts.wordHiddenSize * 3 + opts.evalCharHiddenSize * 3 * 3;
+		opts.inputSize = opts.charHiddenSize * 3 + opts.wordHiddenSize * 3 + opts.evalCharHiddenSize * 3 * 3;
 		olayer_linear.initial(opts.labelSize, opts.inputSize, false, mem);
 		return true;
 	}
@@ -41,7 +53,9 @@ public:
 
 	void exportModelParams(ModelUpdate& ada){
 		words.exportAdaParams(ada);
+		chars.exportAdaParams(ada);
 		hidden_linear.exportAdaParams(ada);
+		char_hidden_linear.exportAdaParams(ada);
 		evalChars.exportAdaParams(ada);
 		eval_char_hidden_linear.exportAdaParams(ada);
 		olayer_linear.exportAdaParams(ada);

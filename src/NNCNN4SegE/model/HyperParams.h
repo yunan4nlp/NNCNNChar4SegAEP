@@ -18,6 +18,11 @@ struct HyperParams{
 	int wordWindow;
 	int windowOutput;
 
+	int charHiddenSize;
+	int charContext;
+	int charWindow;
+	int charWindowOutput;
+
 	int evalCharHiddenSize;
 	int evalCharContext;
 	int evalCharWindow;
@@ -26,6 +31,7 @@ struct HyperParams{
 
 	//auto generated
 	int wordDim;
+	int charDim;
 	int evalCharDim;
 	int inputSize;
 	int labelSize;
@@ -40,9 +46,14 @@ public:
 		nnRegular = opt.regParameter;
 		adaAlpha = opt.adaAlpha;
 		adaEps = opt.adaEps;
+
 		wordHiddenSize = opt.wordHiddenSize;
-		evalCharHiddenSize = opt.evalCharHiddenSize;
 		wordContext = opt.wordcontext;
+
+		charHiddenSize = opt.charHiddenSize;
+		charContext = opt.charcontext;
+
+		evalCharHiddenSize = opt.evalCharHiddenSize;
 		evalCharContext = opt.evalCharContext;
 		dropProb = opt.dropProb;
 

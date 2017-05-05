@@ -17,6 +17,7 @@ class Classifier {
 
 public:
 	unordered_map<string, int> m_word_stats;
+	unordered_map<string, int> m_char_stats;
 	unordered_map<string, int> m_eval_char_stats;
 
 public:
