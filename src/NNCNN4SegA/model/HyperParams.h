@@ -17,11 +17,18 @@ struct HyperParams{
 	int wordContext;
 	int wordWindow;
 	int windowOutput;
+
+	int charHiddenSize;
+	int charContext;
+	int charWindow;
+	int charWindowOutput;
+
 	dtype dropProb;
 
 
 	//auto generated
 	int wordDim;
+	int charDim;
 	int attDim;
 	int inputSize;
 	int labelSize;
@@ -38,6 +45,10 @@ public:
 		adaEps = opt.adaEps;
 		wordHiddenSize = opt.wordHiddenSize;
 		wordContext = opt.wordcontext;
+
+		charHiddenSize = opt.charHiddenSize;
+		charContext = opt.charcontext;
+
 		dropProb = opt.dropProb;
 
 		bAssigned = true;

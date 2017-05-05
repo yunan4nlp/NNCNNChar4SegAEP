@@ -54,7 +54,7 @@ public:
 		_hyperparams.print();
 
 		_pcg = new ComputionGraph();
-		_pcg->createNodes(ComputionGraph::max_sentence_length, ComputionGraph::max_att_size);
+		_pcg->createNodes(ComputionGraph::max_sentence_length, ComputionGraph::max_char_length, ComputionGraph::max_att_size);
 		_pcg->initial(_modelparams, _hyperparams, &_aligned_mem);
 
 		setUpdateParameters(_hyperparams.nnRegular, _hyperparams.adaAlpha, _hyperparams.adaEps);
