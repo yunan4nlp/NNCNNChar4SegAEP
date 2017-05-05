@@ -47,7 +47,7 @@ int Classifier::createAlphabet(const vector<Instance>& vecInsts) {
 
 		int p_num = polar.size();
 		for (int i = 0; i < p_num; i++) {
-			string curpolar = normalize_to_lowerwithdigit(polar[i]);
+			string curpolar = polar[i];
 			m_sparse_stats[curpolar]++;
 		}
 
