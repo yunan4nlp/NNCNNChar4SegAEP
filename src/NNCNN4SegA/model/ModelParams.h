@@ -41,7 +41,7 @@ public:
 		opts.labelSize = labelAlpha.size();
 		hidden_linear.initial(opts.wordHiddenSize, opts.windowOutput, true, mem);
 		char_hidden_linear.initial(opts.charHiddenSize, opts.charWindowOutput, true, mem);
-		opts.inputSize = (opts.attDim + opts.wordHiddenSize) * 3;
+		opts.inputSize = (opts.attDim + opts.wordHiddenSize + opts.charHiddenSize) * 3;
 		olayer_linear.initial(opts.labelSize, opts.inputSize, false, mem);
 		return true;
 	}

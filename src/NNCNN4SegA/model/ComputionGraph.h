@@ -122,7 +122,7 @@ public:
 		_att_min_pooling.init(opts.attDim, -1, mem);
 		_att_pooling_concat.init(opts.attDim * 3, -1, mem);
 
-		_concat.init((opts.attDim + opts.wordHiddenSize) * 3, -1, mem);
+		_concat.init((opts.attDim + opts.wordHiddenSize + opts.charHiddenSize) * 3, -1, mem);
 		_output.setParam(&model.olayer_linear);
 		_output.init(opts.labelSize, -1, mem);
 	}
@@ -184,7 +184,7 @@ public:
 			_att_pooling_concat.forward(this, &_att_avg_pooling, &_att_max_pooling, &_att_min_pooling);
 		}
 
-		_concat.forward(this, &_word_pooling_concat, &_att_pooling_concat);
+		_concat.forward(this, &_word_pooling_concat, &_att_pooling_concat, &_char_pooling_concat);
 		_output.forward(this, &_concat);
 	}
 };
