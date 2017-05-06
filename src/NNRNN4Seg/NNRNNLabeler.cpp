@@ -34,6 +34,14 @@ int Classifier::createAlphabet(const vector<Instance>& vecInsts) {
 		{
 			string curword = normalize_to_lowerwithdigit(words[i]);
 			m_word_stats[curword]++;
+
+			vector<string> curchars;
+			getCharactersFromUTF8String(curword, curchars);
+			int char_num = curchars.size();
+			for (int j = 0; j < char_num; j++) {
+				string curchar = normalize_to_lowerwithdigit(curchars[j]);
+				m_char_stats[curchar]++;
+			}
 		}
 
 		if (m_options.maxInstance > 0 && numInstance == m_options.maxInstance)
@@ -77,6 +85,14 @@ int Classifier::addTestAlpha(const vector<Instance>& vecInsts) {
 		for (int i = 0; i < curInstSize; ++i) {
 			string curword = normalize_to_lowerwithdigit(words[i]);
 			if (!m_options.wordEmbFineTune)m_word_stats[curword]++;
+
+			vector<string> curchars;
+			getCharactersFromUTF8String(curword, curchars);
+			int char_num = curchars.size();
+			for (int j = 0; j < char_num; j++) {
+				string curchar = normalize_to_lowerwithdigit(curchars[j]);
+				if(!m_options.charEmbFineTune)m_char_stats[curchar]++;
+			}
 		}
 
 		if (m_options.maxInstance > 0 && numInstance == m_options.maxInstance)
@@ -134,6 +150,15 @@ void Classifier::train(const string& trainFile, const string& devFile, const str
 	}
 	else{
 		m_driver._modelparams.words.initial(&m_driver._modelparams.wordAlpha, m_options.wordEmbSize, m_options.wordEmbFineTune);
+	}
+
+	m_char_stats[unknownkey] = m_options.charCutOff + 1;
+	m_driver._modelparams.charAlpha.initial(m_char_stats, m_options.charCutOff);
+	if (m_options.charFile != "") {
+		m_driver._modelparams.chars.initial(&m_driver._modelparams.charAlpha, m_options.charFile, m_options.charEmbFineTune);
+	}
+	else{
+		m_driver._modelparams.chars.initial(&m_driver._modelparams.charAlpha, m_options.charEmbSize, m_options.charEmbFineTune);
 	}
 
 	m_driver._hyperparams.setRequared(m_options);
