@@ -50,6 +50,28 @@ public:
 		return true;
 	}
 
+	bool testInitial(HyperParams& opts, AlignedMemoryPool* mem = NULL){
+
+		// some model parameters should be initialized outside
+		if (words.nVSize <= 0 || labelAlpha.size() <= 0){
+			return false;
+		}
+		opts.wordDim = words.nDim;
+		opts.wordWindow = opts.wordContext * 2 + 1;
+		opts.windowOutput = opts.wordDim * opts.wordWindow;
+
+		opts.charDim = chars.nDim;
+		opts.charWindow = opts.charContext * 2 + 1;
+		opts.charWindowOutput = opts.charDim * opts.charWindow;
+
+		opts.evalCharDim = evalChars.nDim;
+		opts.evalCharWindow = opts.evalCharContext * 2 + 1;
+		opts.labelSize = labelAlpha.size();
+
+		opts.inputSize = opts.charHiddenSize * 3 + opts.wordHiddenSize * 3 + opts.evalCharHiddenSize * 3 * 3;
+		return true;
+	}
+
 
 	void exportModelParams(ModelUpdate& ada){
 		words.exportAdaParams(ada);
@@ -70,14 +92,37 @@ public:
 	}
 
 	// will add it later
-	void saveModel(){
+	void saveModel(std::ofstream &os) const {
+		wordAlpha.write(os);
+		words.save(os);
 
+		charAlpha.write(os);
+		chars.save(os);
+
+		evalCharAlpha.write(os);
+		evalChars.save(os);
+		eval_char_hidden_linear.save(os);
+		hidden_linear.save(os);
+		char_hidden_linear.save(os);
+		olayer_linear.save(os);
+		labelAlpha.write(os);
 	}
 
-	void loadModel(const string& inFile){
+	void loadModel(std::ifstream &is, AlignedMemoryPool* mem = NULL) {
+		wordAlpha.read(is);
+		words.load(is, &wordAlpha, mem);
 
+		charAlpha.read(is);
+		chars.load(is, &charAlpha, mem);
+
+		evalCharAlpha.read(is);
+		evalChars.load(is, &evalCharAlpha, mem);
+		eval_char_hidden_linear.load(is);
+		hidden_linear.load(is);
+		char_hidden_linear.load(is);
+		olayer_linear.load(is);
+		labelAlpha.read(is);
 	}
-
 };
 
 #endif /* SRC_ModelParams_H_ */

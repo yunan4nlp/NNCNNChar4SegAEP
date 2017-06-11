@@ -61,6 +61,28 @@ public:
 		setUpdateParameters(_hyperparams.nnRegular, _hyperparams.adaAlpha, _hyperparams.adaEps);
 	}
 
+	inline void testInitial() {
+		if (!_hyperparams.bValid()) {
+			std::cout << "hyper parameter initialization Error, Please check!" << std::endl;
+			return;
+		}
+		if (!_modelparams.testInitial(_hyperparams, &_aligned_mem)) {
+			std::cout << "model parameter initialization Error, Please check!" << std::endl;
+			return;
+		}
+		_modelparams.exportModelParams(_ada);
+		_modelparams.exportCheckGradParams(_checkgrad);
+
+		_hyperparams.print();
+
+		_pcg = new ComputionGraph();
+		_pcg->createNodes(ComputionGraph::max_sentence_length, ComputionGraph::max_char_length,
+			ComputionGraph::MAX_EVAL_SIZE, ComputionGraph::MAX_EVAL_LENGTH);
+		_pcg->initial(_modelparams, _hyperparams, &_aligned_mem);
+
+		setUpdateParameters(_hyperparams.nnRegular, _hyperparams.adaAlpha, _hyperparams.adaEps);
+	}
+
 
 	inline dtype train(const vector<Instance>& vecInsts, int iter) {
 		_eval.reset();
@@ -120,9 +142,15 @@ public:
 		_ada.update(5.0);
 	}
 
-	void writeModel();
+	void saveModel(std::ofstream &os) const {
+		_modelparams.saveModel(os);
+		_hyperparams.saveModel(os);
+	}
 
-	void loadModel();
+	void loadModel(std::ifstream &is, AlignedMemoryPool* mem = NULL) {
+		_modelparams.loadModel(is, mem);
+		_hyperparams.loadModel(is);
+	}
 
 
 

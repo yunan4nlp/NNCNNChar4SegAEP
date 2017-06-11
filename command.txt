@@ -1,3 +1,9 @@
 cmake .. -DEIGEN3_INCLUDE_DIR=C:\eigen -DN3L_INCLUDE_DIR=D:\LibN3L-2.0
 
 -l -train phone_corpus\phone_test_seg_att_evl_polarity.txt -dev phone_corpus\phone_test_seg_att_evl_polarity.txt -test phone_corpus\phone_test_seg_att_evl_polarity.txt -option phone_corpus\option.debug
+
+
+-l -train ESeg\sample\corpus\phone_train_seg_att_evl_polarity.sample -dev ESeg\sample\corpus\phone_dev_seg_att_evl_polarity.sample -test ESeg\sample\corpus\phone_test_seg_att_evl_polarity.sample -option ESeg\sample\option\option.debug -model ESeg\sample\model\model > ESeg\sample\log\log
+
+
+-test ESeg\sample\corpus\phone_test_seg_att_evl_polarity.sample -model ESeg\sample\model\model -output ESeg\sample\output\output > ESeg\sample\log\log.test

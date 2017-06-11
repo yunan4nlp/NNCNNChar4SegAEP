@@ -68,15 +68,72 @@ public:
 		return bAssigned;
 	}
 
-
 public:
 
 	void print(){
-
 	}
 
+
+	void saveModel(std::ofstream &os) const {
+		os << nnRegular << endl;
+		os << adaAlpha << endl;
+		os << adaEps << endl;
+
+		os << wordHiddenSize << endl;
+		os << wordContext << endl;
+		os << wordWindow << endl;
+		os << windowOutput << endl;
+
+		os << charHiddenSize << endl;
+		os << charContext << endl;
+		os << charWindow << endl;
+		os << charWindowOutput << endl;
+
+		os << evalCharHiddenSize << endl;
+		os << evalCharContext << endl;
+		os << evalCharWindow << endl;
+		os << dropProb << endl;
+
+
+		os << wordDim << endl;
+		os << charDim << endl;
+		os << evalCharDim << endl;
+		os << inputSize << endl;
+		os << labelSize << endl;
+	}
+
+	void loadModel(std::ifstream &is) {
+		is >> nnRegular;
+		is >> adaAlpha;
+		is >> adaEps;
+
+		is >> wordHiddenSize;
+		is >> wordContext;
+		is >> wordWindow;
+		is >> windowOutput;
+
+		is >> charHiddenSize;
+		is >> charContext;
+		is >> charWindow;
+		is >> charWindowOutput;
+
+		is >> evalCharHiddenSize;
+		is >> evalCharContext;
+		is >> evalCharWindow;
+		is >> dropProb;
+
+
+		is >> wordDim;
+		is >> charDim;
+		is >> evalCharDim;
+		is >> inputSize;
+		is >> labelSize;
+		bAssigned = true;
+	}
 private:
 	bool bAssigned;
+
+
 };
 
 
